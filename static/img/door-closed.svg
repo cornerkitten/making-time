@@ -5,9 +5,8 @@
         <g transform="matrix(1.28415,0,0,1.28415,-30.0977,-10.1659)">
             <rect x="44.853" y="7.916" width="61.07" height="99.677" style="fill:rgb(34,34,34);"/>
         </g>
-        <rect x="42.99" y="14.444" width="5.642" height="35.521" style="fill:rgb(34,34,34);stroke:rgb(231,231,231);stroke-width:1px;"/>
-        <g transform="matrix(1,0,0,1,41.35,0)">
-            <rect x="42.99" y="14.444" width="5.642" height="35.521" style="fill:rgb(34,34,34);stroke:rgb(231,231,231);stroke-width:1px;"/>
+        <g transform="matrix(1,0,0,0.652163,52.8889,42.9976)">
+            <rect x="42.99" y="14.444" width="5.642" height="35.521" style="fill:rgb(230,230,230);stroke:rgb(231,231,231);stroke-width:1.18px;"/>
         </g>
     </g>
 </svg>

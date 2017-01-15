@@ -96,8 +96,8 @@ export default class World {
   initScene(sceneId) {
     switch (sceneId) {
       case SCENE.HOME: {
-        const character = this.createEntity(characterPrefab);
         this.createEntity(doorPrefab);
+        const character = this.createEntity(characterPrefab);
         const walkRightCommand = new WalkCommand(character.behaviors[0], 8);
         const walkLeftCommand = new WalkCommand(character.behaviors[0], -8);
         this[keyboardController_].registerKeyDown(39, walkRightCommand);
