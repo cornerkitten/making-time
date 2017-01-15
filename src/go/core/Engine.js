@@ -31,7 +31,7 @@ export default class Engine {
 
   // TODO Remove default width and height
   // TODO Ensure width and height is dynamically calculated based on viewport
-  init(view, initialScene, width = 800, height = 600) {
+  init(view, initialScene, width, height) {
     this[initialScene_] = initialScene;
     this[renderer_] = Pixi.autoDetectRenderer(width, height, {
       view,

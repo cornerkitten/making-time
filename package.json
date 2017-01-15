@@ -1,7 +1,7 @@
 {
-  "name": "go-game",
-  "version": "0.2.0",
-  "description": "The game of go.",
+  "name": "mini-game",
+  "version": "0.1.0",
+  "description": "A small game from our mini-code-day.",
   "author": "Sam Vaughn",
   "private": true,
   "scripts": {

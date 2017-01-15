@@ -4,10 +4,9 @@
 import * as Pixi from 'pixi.js';
 import { COMPONENT, DISPLAY_TYPE } from '../core/constants';
 import { SCENE, BEHAVIOR } from '../resources';
-import stonePrefab from '../prefabs/stone';
-import previewStonePrefab from '../prefabs/previewStone';
+import characterPrefab from '../prefabs/character';
 // TODO Remove as depenency
-import PreviewStone from '../behaviors/PreviewStone';
+import Character from '../behaviors/Character';
 
 const stage_ = Symbol('stage');
 
@@ -18,8 +17,14 @@ function createDisplay(config) {
   switch (type) {
     case DISPLAY_TYPE.SPRITE:
       display = Pixi.Sprite.from(config.texture);
-      display.anchor.x = config.anchor.x || 0;
-      display.anchor.y = config.anchor.y || 0;
+      if (config.anchor) {
+        display.anchor.x = config.anchor.x || 0;
+        display.anchor.y = config.anchor.y || 0;
+      }
+      if (config.position) {
+        display.position.x = config.position.x || 0;
+        display.position.y = config.position.y || 0;
+      }
       break;
     case DISPLAY_TYPE.CONTAINER:
       display = new Pixi.Container();
@@ -59,8 +64,8 @@ function createBehavior(config, services) {
 
   // TODO Generalize process
   switch (config.component) {
-    case BEHAVIOR.PREVIEW_STONE:
-      return new PreviewStone(params, services);
+    case BEHAVIOR.CHARACTER:
+      return new Character(params, services);
     default:
       // TODO Throw exception
       debugger;
@@ -75,12 +80,8 @@ export default class World {
 
   initScene(sceneId) {
     switch (sceneId) {
-      case SCENE.BASIC: {
-        this.createEntity(stonePrefab);
-        break;
-      }
-      case SCENE.PREVIEW: {
-        this.createEntity(previewStonePrefab);
+      case SCENE.HOME: {
+        this.createEntity(characterPrefab);
         break;
       }
       default:

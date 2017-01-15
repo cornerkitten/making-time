@@ -5,7 +5,7 @@ export const TEXTURE = {
 };
 
 export const SCENE = {
-  BASIC: 'basic',
+  HOME: 'home',
 };
 
 export const BEHAVIOR = {
