@@ -1,6 +1,6 @@
-# go-game
+# mini-game
 
-> The game of go.
+> A small game made during our mini-code-day.
 
 ## IMPORTANT
 
