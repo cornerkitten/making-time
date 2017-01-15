@@ -52,6 +52,7 @@ export default class Engine {
     // TODO Evaluate needs for update()
     // this[world_].update();
 
+    this[world_].update();
     this[renderer_].render(this[stage_]);
 
     requestAnimationFrame(this.update.bind(this));

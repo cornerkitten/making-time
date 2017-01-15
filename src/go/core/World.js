@@ -3,12 +3,17 @@
 
 import * as Pixi from 'pixi.js';
 import { COMPONENT, DISPLAY_TYPE } from '../core/constants';
+import KeyboardController from '../core/KeyboardController';
+
 import { SCENE, BEHAVIOR } from '../resources';
-import characterPrefab from '../prefabs/character';
+
 // TODO Remove as depenency
+import characterPrefab from '../prefabs/character';
 import Character from '../behaviors/Character';
+import WalkCommand from '../commands/WalkCommand';
 
 const stage_ = Symbol('stage');
+const keyboardController_ = Symbol('keyboardController');
 
 function createDisplay(config) {
   const type = config.type || DISPLAY_TYPE.CONTAINER;
@@ -76,12 +81,17 @@ function createBehavior(config, services) {
 export default class World {
   constructor(stage) {
     this[stage_] = stage;
+    this[keyboardController_] = new KeyboardController();
   }
 
   initScene(sceneId) {
     switch (sceneId) {
       case SCENE.HOME: {
-        this.createEntity(characterPrefab);
+        const character = this.createEntity(characterPrefab);
+        const walkRightCommand = new WalkCommand(character.behaviors[0], 8);
+        const walkLeftCommand = new WalkCommand(character.behaviors[0], -8);
+        this[keyboardController_].registerKeyDown(39, walkRightCommand);
+        this[keyboardController_].registerKeyDown(37, walkLeftCommand);
         break;
       }
       default:
@@ -90,12 +100,15 @@ export default class World {
   }
 
   createEntity(config) {
+    const entity = {};
+
     // TODO If no display component is described,
     //      create container by default
     let display;
     if (config.display) {
       display = createDisplay(config.display);
       this[stage_].addChild(display);
+      entity.display = display;
     }
 
     const services = {
@@ -108,16 +121,21 @@ export default class World {
         }
       },
     };
+    entity.services = services;
 
     if (config.behaviors) {
+      entity.behaviors = [];
+
       for (let i = 0; i < config.behaviors.length; i += 1) {
-        createBehavior(config.behaviors[i], services);
+        const behavior = createBehavior(config.behaviors[i], services);
+        entity.behaviors.push(behavior);
       }
     }
+
+    return entity;
   }
 
-  // TODO Evaluate needs for update()
-  // update() {
-  //   this[stage_].foobar();
-  // }
+  update() {
+    this[keyboardController_].update();
+  }
 }

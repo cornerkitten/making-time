@@ -6,10 +6,16 @@
 
 import { COMPONENT } from '../core/constants';
 
+const display_ = Symbol('display');
+
 export default class Character {
   constructor(params, services) {
-    const display = services.component(COMPONENT.DISPLAY);
-    display.position.x = window.innerWidth / 2;
-    display.position.y = 500;
+    this[display_] = services.component(COMPONENT.DISPLAY);
+    this[display_].position.x = window.innerWidth / 2;
+    this[display_].position.y = 500;
+  }
+
+  walk(amount) {
+    this[display_].position.x += amount;
   }
 }
