@@ -1,7 +1,7 @@
 
 export const TEXTURE = {
-  BLACK_STONE: 'static/img/go-stone-black-flat.svg',
-  WHITE_STONE: 'static/img/go-stone-white-flat.svg',
+  CHARACTER: 'static/img/go-stone-white-flat.svg',
+  DOOR_CLOSED: 'static/img/door-closed.svg',
 };
 
 export const SCENE = {
@@ -9,5 +9,6 @@ export const SCENE = {
 };
 
 export const BEHAVIOR = {
-  PREVIEW_STONE: 'PreviewStone',
+  CHARACTER: 'Character',
+  DOOR: 'Door',
 };

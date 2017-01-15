@@ -6,10 +6,10 @@ import { DISPLAY_TYPE } from '../core/constants';
 export default {
   display: {
     type: DISPLAY_TYPE.SPRITE,
-    texture: TEXTURE.CHARACTER,
+    texture: TEXTURE.DOOR_CLOSED,
     position: {
-      x: 64,
-      y: 64,
+      x: 256,
+      y: 500,
     },
     anchor: {
       x: 0.5,
@@ -18,7 +18,7 @@ export default {
   },
   behaviors: [
     {
-      component: BEHAVIOR.CHARACTER,
+      component: BEHAVIOR.DOOR,
     },
   ],
 };

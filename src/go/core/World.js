@@ -8,8 +8,13 @@ import KeyboardController from '../core/KeyboardController';
 import { SCENE, BEHAVIOR } from '../resources';
 
 // TODO Remove as depenency
+// Prefabs
 import characterPrefab from '../prefabs/character';
+import doorPrefab from '../prefabs/door';
+// Behaviors
 import Character from '../behaviors/Character';
+import Door from '../behaviors/Door';
+// Comamnds
 import WalkCommand from '../commands/WalkCommand';
 
 const stage_ = Symbol('stage');
@@ -68,9 +73,13 @@ function createBehavior(config, services) {
   }
 
   // TODO Generalize process
+  // TODO Watch our for when config.component is undefined
+  //      (e.g. using a constant which isn't defined)
   switch (config.component) {
     case BEHAVIOR.CHARACTER:
       return new Character(params, services);
+    case BEHAVIOR.DOOR:
+      return new Door(params, services);
     default:
       // TODO Throw exception
       debugger;
@@ -88,6 +97,7 @@ export default class World {
     switch (sceneId) {
       case SCENE.HOME: {
         const character = this.createEntity(characterPrefab);
+        this.createEntity(doorPrefab);
         const walkRightCommand = new WalkCommand(character.behaviors[0], 8);
         const walkLeftCommand = new WalkCommand(character.behaviors[0], -8);
         this[keyboardController_].registerKeyDown(39, walkRightCommand);
