@@ -37,6 +37,10 @@ export default class KeyboardController {
     this[keysInDownState_].delete(e.keyCode);
   }
 
+  clear() {
+    this[keyDownBindings_] = {};
+  }
+
   update() {
     this[keysInDownState_].forEach((keyCode) => {
       if (this[keyDownBindings_][keyCode]) {

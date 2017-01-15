@@ -6,6 +6,7 @@ export const TEXTURE = {
 
 export const SCENE = {
   HOME: 'home',
+  PHONE: 'phone',
 };
 
 export const BEHAVIOR = {

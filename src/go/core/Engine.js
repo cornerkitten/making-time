@@ -43,7 +43,7 @@ export default class Engine {
 
   onLoad() {
     this[world_] = new World(this[stage_]);
-    this[world_].initScene(this[initialScene_]);
+    this[world_].changeScene(this[initialScene_]);
 
     requestAnimationFrame(this.update.bind(this));
   }
