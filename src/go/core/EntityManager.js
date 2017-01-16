@@ -142,4 +142,14 @@ export default class EntityManager {
     this[stage_].removeChildren();
     this[entities_] = [];
   }
+
+  update() {
+    this[entities_].forEach((entity) => {
+      entity.behaviors.forEach((behavior) => {
+        if (behavior.update) {
+          behavior.update();
+        }
+      });
+    });
+  }
 }

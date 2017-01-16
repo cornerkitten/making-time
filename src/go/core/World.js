@@ -32,7 +32,7 @@ function performSceneChange(sceneId) {
       this[keyboardController_].registerKeyDown(39, walkRightCommand);
       this[keyboardController_].registerKeyDown(37, walkLeftCommand);
       this[keyboardController_].registerKeyDown(32, changeSceneCommand);
-      this[keyboardController_].registerKeyDown(13, createDialogueCommand);
+      this[keyboardController_].registerKeyStart(13, createDialogueCommand);
       break;
     }
     case SCENE.PHONE: {
@@ -69,5 +69,7 @@ export default class World {
     }
 
     this[keyboardController_].update();
+
+    this[entityManager_].update();
   }
 }
