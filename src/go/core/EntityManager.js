@@ -32,6 +32,9 @@ function createDisplay(config) {
     case DISPLAY_TYPE.CONTAINER:
       display = new Pixi.Container();
       break;
+    case DISPLAY_TYPE.TEXT:
+      display = new Pixi.Text(config.text, config.style);
+      break;
     default:
       break;
   }

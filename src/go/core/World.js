@@ -6,9 +6,11 @@ import { SCENE } from '../resources';
 // Prefabs
 import characterPrefab from '../prefabs/character';
 import doorPrefab from '../prefabs/door';
+import dialoguePrefab from '../prefabs/dialogue';
 // Comamnds
 import WalkCommand from '../commands/WalkCommand';
 import ChangeSceneCommand from '../commands/ChangeSceneCommand';
+import CreateEntityCommand from '../commands/CreateEntityCommand';
 
 const entityManager_ = Symbol('entityManager');
 const keyboardController_ = Symbol('keyboardController');
@@ -26,9 +28,11 @@ function performSceneChange(sceneId) {
       const walkRightCommand = new WalkCommand(character.behaviors[0], 8);
       const walkLeftCommand = new WalkCommand(character.behaviors[0], -8);
       const changeSceneCommand = new ChangeSceneCommand(this, SCENE.PHONE);
+      const createDialogueCommand = new CreateEntityCommand(this[entityManager_], dialoguePrefab);
       this[keyboardController_].registerKeyDown(39, walkRightCommand);
       this[keyboardController_].registerKeyDown(37, walkLeftCommand);
       this[keyboardController_].registerKeyDown(32, changeSceneCommand);
+      this[keyboardController_].registerKeyDown(13, createDialogueCommand);
       break;
     }
     case SCENE.PHONE: {
