@@ -5,16 +5,12 @@ import * as Pixi from 'pixi.js';
 
 // TODO Consider if any dependencies should be removed
 import { COMPONENT, DISPLAY_TYPE } from '../core/constants';
-import { BEHAVIOR } from '../resources';
-// Behaviors
-import Character from '../behaviors/Character';
-import Door from '../behaviors/Door';
-import Dialogue from '../behaviors/Dialogue';
+import { BEHAVIOR_CLASS } from '../resources';
 
 const stage_ = Symbol('stage');
 const entities_ = Symbol('entities');
 
-function createDisplay(config) {
+function createDisplay(config = { type: DISPLAY_TYPE.CONTAINER }) {
   const type = config.type || DISPLAY_TYPE.CONTAINER;
   let display;
 
@@ -61,7 +57,6 @@ function createBehaviorParam(param) {
 // TODO Protect the passed in services
 function createBehavior(config, services) {
   const params = {};
-  let BehaviorClass;
 
   if (config.params) {
     const paramKeys = Object.keys(config.params);
@@ -70,26 +65,15 @@ function createBehavior(config, services) {
     });
   }
 
-  // TODO Generalize process
   // TODO Watch our for when config.component is undefined
   //      (e.g. using a constant which isn't defined)
-  switch (config.component) {
-    case BEHAVIOR.CHARACTER:
-      BehaviorClass = Character;
-      break;
-    case BEHAVIOR.DOOR:
-      BehaviorClass = Door;
-      break;
-    case BEHAVIOR.DIALOGUE:
-      BehaviorClass = Dialogue;
-      break;
-    default:
-      // TODO Throw exception
-      debugger;
-      return null;
+  if (config.component === undefined || BEHAVIOR_CLASS[config.component] === undefined) {
+    // TODO Throw exception
+    debugger;
+    return null;
   }
 
-  return new BehaviorClass(params, services);
+  return new BEHAVIOR_CLASS[config.component](params, services);
 }
 
 export default class EntityManager {
@@ -105,12 +89,9 @@ export default class EntityManager {
 
     // TODO If no display component is described,
     //      create container by default
-    let display;
-    if (config.display) {
-      display = createDisplay(config.display);
-      this[stage_].addChild(display);
-      entity.display = display;
-    }
+    const display = createDisplay(config.display);
+    this[stage_].addChild(display);
+    entity.display = display;
 
     const services = {
       component: (componentId) => {
