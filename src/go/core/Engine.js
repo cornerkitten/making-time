@@ -15,6 +15,7 @@ const initialScene_ = Symbol('initialScene');
 const world_ = Symbol('world');
 
 function loadTextures(callback) {
+  Pixi.loader.reset();
   const textureFiles = Object.keys(TEXTURE).map(key => TEXTURE[key]);
   textureFiles.forEach(file => Pixi.loader.add(file));
   Pixi.loader.once('complete', callback);
