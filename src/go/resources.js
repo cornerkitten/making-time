@@ -10,6 +10,7 @@ export const SCENE = {
 };
 
 export const BEHAVIOR = {
-  CHARACTER: 'Character',
-  DOOR: 'Door',
+  CHARACTER: 'character',
+  DOOR: 'door',
+  DIALOGUE: 'dialogue',
 };

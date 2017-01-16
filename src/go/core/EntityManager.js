@@ -9,6 +9,7 @@ import { BEHAVIOR } from '../resources';
 // Behaviors
 import Character from '../behaviors/Character';
 import Door from '../behaviors/Door';
+import Dialogue from '../behaviors/Dialogue';
 
 const stage_ = Symbol('stage');
 const entities_ = Symbol('entities');
@@ -60,6 +61,7 @@ function createBehaviorParam(param) {
 // TODO Protect the passed in services
 function createBehavior(config, services) {
   const params = {};
+  let BehaviorClass;
 
   if (config.params) {
     const paramKeys = Object.keys(config.params);
@@ -73,14 +75,21 @@ function createBehavior(config, services) {
   //      (e.g. using a constant which isn't defined)
   switch (config.component) {
     case BEHAVIOR.CHARACTER:
-      return new Character(params, services);
+      BehaviorClass = Character;
+      break;
     case BEHAVIOR.DOOR:
-      return new Door(params, services);
+      BehaviorClass = Door;
+      break;
+    case BEHAVIOR.DIALOGUE:
+      BehaviorClass = Dialogue;
+      break;
     default:
       // TODO Throw exception
       debugger;
       return null;
   }
+
+  return new BehaviorClass(params, services);
 }
 
 export default class EntityManager {
