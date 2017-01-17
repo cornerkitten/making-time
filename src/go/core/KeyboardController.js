@@ -54,6 +54,7 @@ export default class KeyboardController {
 
   clear() {
     this[keyDownBindings_] = {};
+    this[keyStartBindings_] = {};
   }
 
   update() {

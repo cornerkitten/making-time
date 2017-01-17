@@ -8,13 +8,13 @@
 /* global window */
 
 import Engine from './go/core/Engine';
-import { SCENE } from './go/resources';
+import { SCENE_ID } from './go/resources';
 
 export default {
   name: 'app',
   mounted() {
     const engine = new Engine();
-    engine.init(this.$refs.gameView, SCENE.HOME, window.innerWidth, window.innerHeight);
+    engine.init(this.$refs.gameView, SCENE_ID.HOME, window.innerWidth, window.innerHeight);
   },
 };
 </script>

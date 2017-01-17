@@ -1,11 +1,12 @@
 
+/* eslint no-debugger: "off" */
+
 // TODO Consider if any dependencies should be removed
 import EntityManager from '../core/EntityManager';
 import KeyboardController from '../core/KeyboardController';
-import { SCENE } from '../resources';
+import { SCENE_ID, UNIQUE_TAG } from '../resources';
+import SCENE from '../scenes/all';
 // Prefabs
-import characterPrefab from '../prefabs/character';
-import doorPrefab from '../prefabs/door';
 import dialoguePrefab from '../prefabs/dialogue';
 // Comamnds
 import WalkCommand from '../commands/WalkCommand';
@@ -16,39 +17,54 @@ const entityManager_ = Symbol('entityManager');
 const keyboardController_ = Symbol('keyboardController');
 const nextScene_ = Symbol('nextScene');
 
+function processScenePrefab(prefab, entityManager) {
+  for (const entity of prefab.entities) {
+    entityManager.createEntity(entity.prefab);
+  }
+}
+
+// TODO Record current scene ID
 // TODO Document function as running with `this` binding
 function performSceneChange(sceneId) {
   this[entityManager_].clearEntities();
   this[keyboardController_].clear();
 
+  processScenePrefab(SCENE[sceneId], this[entityManager_]);
+  const services = {
+    entity: this[entityManager_].entityWithTag.bind(this[entityManager_]),
+    entities: this[entityManager_].entitiesWithTag.bind(this[entityManager_]),
+  };
+
+  const walkRightCommand = new WalkCommand(services, {
+    tag: UNIQUE_TAG.PLAYER,
+    amount: 8,
+  });
+  const walkLeftCommand = new WalkCommand(services, {
+    tag: UNIQUE_TAG.PLAYER,
+    amount: -8,
+  });
+  const createDialogueCommand = new CreateEntityCommand(this[entityManager_], dialoguePrefab);
+  let changeSceneCommand;
+
   switch (sceneId) {
-    case SCENE.HOME: {
-      this[entityManager_].createEntity(doorPrefab);
-      const character = this[entityManager_].createEntity(characterPrefab);
-      const walkRightCommand = new WalkCommand(character.behaviors[0], 8);
-      const walkLeftCommand = new WalkCommand(character.behaviors[0], -8);
-      const changeSceneCommand = new ChangeSceneCommand(this, SCENE.PHONE);
-      const createDialogueCommand = new CreateEntityCommand(this[entityManager_], dialoguePrefab);
-      this[keyboardController_].registerKeyDown(39, walkRightCommand);
-      this[keyboardController_].registerKeyDown(37, walkLeftCommand);
-      this[keyboardController_].registerKeyDown(32, changeSceneCommand);
-      this[keyboardController_].registerKeyStart(13, createDialogueCommand);
+    case SCENE_ID.HOME: {
+      changeSceneCommand = new ChangeSceneCommand(this, SCENE_ID.PHONE);
       break;
     }
-    case SCENE.PHONE: {
-      // this[entityManager_].createEntity(doorPrefab);
-      const character = this[entityManager_].createEntity(characterPrefab);
-      const walkRightCommand = new WalkCommand(character.behaviors[0], 8);
-      const walkLeftCommand = new WalkCommand(character.behaviors[0], -8);
-      const changeSceneCommand = new ChangeSceneCommand(this, SCENE.HOME);
-      this[keyboardController_].registerKeyDown(39, walkRightCommand);
-      this[keyboardController_].registerKeyDown(37, walkLeftCommand);
-      this[keyboardController_].registerKeyDown(8, changeSceneCommand);
+    case SCENE_ID.PHONE: {
+      changeSceneCommand = new ChangeSceneCommand(this, SCENE_ID.HOME);
       break;
     }
     default:
+      // TODO Throw exception
+      debugger;
       break;
   }
+
+  this[keyboardController_].registerKeyDown(39, walkRightCommand);
+  this[keyboardController_].registerKeyDown(37, walkLeftCommand);
+  this[keyboardController_].registerKeyStart(32, changeSceneCommand);
+  this[keyboardController_].registerKeyStart(13, createDialogueCommand);
 }
 
 export default class World {

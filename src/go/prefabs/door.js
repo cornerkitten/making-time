@@ -1,5 +1,4 @@
 
-// import { BEHAVIOR, TEXTURE } from '../resources';
 import { BEHAVIOR, TEXTURE } from '../resources';
 import { DISPLAY_TYPE } from '../core/constants';
 

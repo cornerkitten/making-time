@@ -9,6 +9,30 @@ import { BEHAVIOR_CLASS } from '../resources';
 
 const stage_ = Symbol('stage');
 const entities_ = Symbol('entities');
+const uniqueTags_ = Symbol('uniqueTags');
+
+function createTags(config = [], uniqueTags) {
+  const tags = new Set();
+
+  for (const tag of config) {
+    if (typeof tag === 'string') {
+      tags.add(tag);
+    } else {
+      // TODO Assert expected format of of tag (i.e. tag = {title, isUnique})
+      if (uniqueTags.has(tag.title)) {
+        // TODO Throw exception
+        debugger;
+      }
+
+      if (tag.isUnique) {
+        uniqueTags.add(tag.title);
+      }
+      tags.add(tag.title);
+    }
+  }
+
+  return tags;
+}
 
 function createDisplay(config = { type: DISPLAY_TYPE.CONTAINER }) {
   const type = config.type || DISPLAY_TYPE.CONTAINER;
@@ -80,12 +104,15 @@ export default class EntityManager {
   constructor(stage) {
     this[stage_] = stage;
     this[entities_] = [];
+    this[uniqueTags_] = new Set();
   }
 
   // TODO Update so created entities are queued to be added until between
   //      calls to engine update()
   createEntity(config) {
     const entity = {};
+
+    entity.tags = createTags(config.tags, this[uniqueTags_]);
 
     // TODO If no display component is described,
     //      create container by default
@@ -122,6 +149,23 @@ export default class EntityManager {
   clearEntities() {
     this[stage_].removeChildren();
     this[entities_] = [];
+    this[uniqueTags_].clear();
+  }
+
+  entityWithTag(tag) {
+    const tagTitle = (typeof tag === 'string') ? tag : tag.title;
+
+    // TODO Consider improving performance by keeping a mapping for each
+    //      tag to the enities which hold it.
+    return this[entities_].find(entity => entity.tags.has(tagTitle));
+  }
+
+  entitiesWithTag(tag) {
+    const tagTitle = (typeof tag === 'string') ? tag : tag.title;
+
+    // TODO Consider improving performance by keeping a mapping for each
+    //      tag to the enities which hold it.
+    return this[entities_].filter(entity => entity.tags.has(tagTitle));
   }
 
   update() {
