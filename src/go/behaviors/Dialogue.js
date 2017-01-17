@@ -10,7 +10,21 @@ export default class Dialogue {
   constructor(params, services) {
     const display = services.component(COMPONENT.DISPLAY);
     const style = {
-      fill: '#eee',
+      // TODO Customize style away from example found in Pixi.js's examples
+      //      <http://pixijs.github.io/examples/#/basics/text.js>
+      fontFamily: 'Arial',
+      fontSize: '36px',
+      fontStyle: 'italic',
+      fontWeight: 'bold',
+      fill: '#4a1850',
+      stroke: '#F7EDCA',
+      strokeThickness: 5,
+      dropShadow: false,
+      dropShadowColor: '#F7EDCA',
+      dropShadowAngle: Math.PI / 6,
+      dropShadowDistance: 3,
+      wordWrap: true,
+      wordWrapWidth: 440,
     };
     this[textDisplay_] = new Pixi.Text('i arrived', style);
     this[textDisplay_].position.x = window.innerWidth / 2;
