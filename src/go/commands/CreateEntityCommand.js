@@ -1,14 +1,14 @@
 
-const entityManager_ = Symbol('entityManager');
+const services_ = Symbol('services');
 const prefab_ = Symbol('prefab');
 
 export default class CreateEntityCommand {
-  constructor(entityManager, prefab) {
-    this[entityManager_] = entityManager;
-    this[prefab_] = prefab;
+  constructor(services, params) {
+    this[services_] = services;
+    this[prefab_] = params.prefab;
   }
 
   execute() {
-    this[entityManager_].createEntity(this[prefab_]);
+    this[services_].createEntity(this[prefab_]);
   }
 }

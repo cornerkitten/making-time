@@ -1,14 +1,14 @@
 
-const world_ = Symbol('world');
+const services_ = Symbol('services_');
 const sceneId_ = Symbol('sceneId');
 
 export default class ChangeSceneCommand {
-  constructor(world, sceneId) {
-    this[world_] = world;
-    this[sceneId_] = sceneId;
+  constructor(services, params) {
+    this[services_] = services;
+    this[sceneId_] = params.sceneId;
   }
 
   execute() {
-    this[world_].changeScene(this[sceneId_]);
+    this[services_].changeScene(this[sceneId_]);
   }
 }

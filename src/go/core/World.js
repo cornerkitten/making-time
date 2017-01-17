@@ -33,6 +33,8 @@ function performSceneChange(sceneId) {
   const services = {
     entity: this[entityManager_].entityWithTag.bind(this[entityManager_]),
     entities: this[entityManager_].entitiesWithTag.bind(this[entityManager_]),
+    createEntity: this[entityManager_].createEntity.bind(this[entityManager_]),
+    changeScene: this.changeScene.bind(this),
   };
 
   const walkRightCommand = new WalkCommand(services, {
@@ -43,16 +45,22 @@ function performSceneChange(sceneId) {
     tag: UNIQUE_TAG.PLAYER,
     amount: -8,
   });
-  const createDialogueCommand = new CreateEntityCommand(this[entityManager_], dialoguePrefab);
+  const createDialogueCommand = new CreateEntityCommand(services, {
+    prefab: dialoguePrefab,
+  });
   let changeSceneCommand;
 
   switch (sceneId) {
     case SCENE_ID.HOME: {
-      changeSceneCommand = new ChangeSceneCommand(this, SCENE_ID.PHONE);
+      changeSceneCommand = new ChangeSceneCommand(services, {
+        sceneId: SCENE_ID.PHONE,
+      });
       break;
     }
     case SCENE_ID.PHONE: {
-      changeSceneCommand = new ChangeSceneCommand(this, SCENE_ID.HOME);
+      changeSceneCommand = new ChangeSceneCommand(services, {
+        sceneId: SCENE_ID.HOME,
+      });
       break;
     }
     default:
