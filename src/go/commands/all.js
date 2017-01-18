@@ -1,9 +1,9 @@
 
 import * as RESOURCES from '../resources';
-import CHANGE_SCENE from '../commands/ChangeSceneCommand';
-import CREATE_ENTITY from '../commands/CreateEntityCommand';
-import WALK from '../commands/WalkCommand';
-import OPEN from '../commands/OpenCommand';
+import CHANGE_SCENE from '../commands/ChangeScene';
+import CREATE_ENTITY from '../commands/CreateEntity';
+import WALK from '../commands/Walk';
+import OPEN from '../commands/Open';
 
 export default {
   [RESOURCES.COMMAND_ID.CHANGE_SCENE]: CHANGE_SCENE,
