@@ -4,22 +4,69 @@
 // TODO Consider if any dependencies should be removed
 import EntityManager from '../core/EntityManager';
 import KeyboardController from '../core/KeyboardController';
-import { SCENE_ID, UNIQUE_TAG } from '../resources';
 import SCENE from '../scenes/all';
-// Prefabs
-import dialoguePrefab from '../prefabs/dialogue';
-// Comamnds
-import WalkCommand from '../commands/WalkCommand';
-import ChangeSceneCommand from '../commands/ChangeSceneCommand';
-import CreateEntityCommand from '../commands/CreateEntityCommand';
+import COMMAND from '../commands/all';
 
 const entityManager_ = Symbol('entityManager');
 const keyboardController_ = Symbol('keyboardController');
 const nextScene_ = Symbol('nextScene');
 
-function processScenePrefab(prefab, entityManager) {
+// TODO Generalize and clean-up implementation (e.g. fewer magic indexes)
+function createControl(config, services, keyboardController) {
+  const event = config.trigger.event.split('.');
+  const Command = COMMAND[config.action.commandId];
+  // TODO Ensure params does not have engine properties (e.g. params.commandId)
+  const params = config.action;
+  const command = new Command(services, params);
+
+  if (event[0] === 'key') {
+    let register;
+    let key;
+
+    switch (event[1]) {
+      case 'start':
+        register = keyboardController.registerKeyStart;
+        break;
+      case 'press':
+        register = keyboardController.registerKeyDown;
+        break;
+      default:
+        // TODO Throw exception
+        debugger;
+        break;
+    }
+
+    switch (event[2]) {
+      case 'enter':
+        key = 13;
+        break;
+      case 'space':
+        key = 32;
+        break;
+      case 'left':
+        key = 37;
+        break;
+      case 'right':
+        key = 39;
+        break;
+      default:
+        // TODO Throw exception
+        debugger;
+        break;
+    }
+
+    register.bind(keyboardController)(key, command);
+  }
+}
+
+function processScenePrefab(prefab, entityManager, keyboardController,
+  commandServices) {
   for (const entity of prefab.entities) {
     entityManager.createEntity(entity.prefab);
+  }
+
+  for (const control of prefab.controls) {
+    createControl(control, commandServices, keyboardController);
   }
 }
 
@@ -29,50 +76,15 @@ function performSceneChange(sceneId) {
   this[entityManager_].clearEntities();
   this[keyboardController_].clear();
 
-  processScenePrefab(SCENE[sceneId], this[entityManager_]);
-  const services = {
+  const commandServices = {
     entity: this[entityManager_].entityWithTag.bind(this[entityManager_]),
     entities: this[entityManager_].entitiesWithTag.bind(this[entityManager_]),
     createEntity: this[entityManager_].createEntity.bind(this[entityManager_]),
     changeScene: this.changeScene.bind(this),
   };
 
-  const walkRightCommand = new WalkCommand(services, {
-    tag: UNIQUE_TAG.PLAYER,
-    amount: 8,
-  });
-  const walkLeftCommand = new WalkCommand(services, {
-    tag: UNIQUE_TAG.PLAYER,
-    amount: -8,
-  });
-  const createDialogueCommand = new CreateEntityCommand(services, {
-    prefab: dialoguePrefab,
-  });
-  let changeSceneCommand;
-
-  switch (sceneId) {
-    case SCENE_ID.HOME: {
-      changeSceneCommand = new ChangeSceneCommand(services, {
-        sceneId: SCENE_ID.PHONE,
-      });
-      break;
-    }
-    case SCENE_ID.PHONE: {
-      changeSceneCommand = new ChangeSceneCommand(services, {
-        sceneId: SCENE_ID.HOME,
-      });
-      break;
-    }
-    default:
-      // TODO Throw exception
-      debugger;
-      break;
-  }
-
-  this[keyboardController_].registerKeyDown(39, walkRightCommand);
-  this[keyboardController_].registerKeyDown(37, walkLeftCommand);
-  this[keyboardController_].registerKeyStart(32, changeSceneCommand);
-  this[keyboardController_].registerKeyStart(13, createDialogueCommand);
+  processScenePrefab(SCENE[sceneId], this[entityManager_],
+    this[keyboardController_], commandServices);
 }
 
 export default class World {

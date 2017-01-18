@@ -18,6 +18,12 @@ export const SCENE_ID = {
   PHONE: 'phone',
 };
 
+export const COMMAND_ID = {
+  CHANGE_SCENE: 'changeScene',
+  CREATE_ENTITY: 'createEntity',
+  WALK: 'walk',
+};
+
 // TODO Consider whether this should be named PREFAB_ID
 // export const ENTITY = {
 //   CHARACTER: 'character',
