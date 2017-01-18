@@ -22,6 +22,7 @@ export const COMMAND_ID = {
   CHANGE_SCENE: 'changeScene',
   CREATE_ENTITY: 'createEntity',
   WALK: 'walk',
+  OPEN: 'open',
 };
 
 // TODO Consider whether this should be named PREFAB_ID
@@ -47,10 +48,10 @@ export const BEHAVIOR_CLASS = {
   [BEHAVIOR.DIALOGUE]: Dialogue,
 };
 
-// export const TAG = {
-//   CHARACTER: { title: 'character', isUnique: true },
-// };
-
 export const UNIQUE_TAG = {
   PLAYER: { title: 'player', isUnique: true },
+};
+
+export const TAG = {
+  DOOR: 'door',
 };

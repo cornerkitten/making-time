@@ -10,6 +10,7 @@ import { BEHAVIOR_CLASS } from '../resources';
 const stage_ = Symbol('stage');
 const entities_ = Symbol('entities');
 const uniqueTags_ = Symbol('uniqueTags');
+const entityServices_ = Symbol('entityServices');
 
 function createTags(config = [], uniqueTags) {
   const tags = new Set();
@@ -101,10 +102,11 @@ function createBehavior(config, services) {
 }
 
 export default class EntityManager {
-  constructor(stage) {
+  constructor(stage, entityServices) {
     this[stage_] = stage;
     this[entities_] = [];
     this[uniqueTags_] = new Set();
+    this[entityServices_] = entityServices;
   }
 
   // TODO Update so created entities are queued to be added until between
@@ -129,6 +131,9 @@ export default class EntityManager {
             return null;
         }
       },
+      // TODO Update so scene change happens via store.state change
+      changeScene: this[entityServices_].changeScene,
+      entity: this.entityWithTag.bind(this),
     };
     entity.services = services;
 

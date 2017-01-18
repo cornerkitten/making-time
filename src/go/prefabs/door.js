@@ -1,8 +1,9 @@
 
-import { BEHAVIOR, TEXTURE } from '../resources';
+import { BEHAVIOR, TEXTURE, TAG } from '../resources';
 import { DISPLAY_TYPE } from '../core/constants';
 
 export default {
+  tags: [TAG.DOOR],
   display: {
     type: DISPLAY_TYPE.SPRITE,
     texture: TEXTURE.DOOR_CLOSED,

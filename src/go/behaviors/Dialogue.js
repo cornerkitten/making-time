@@ -4,6 +4,7 @@
 import * as Pixi from 'pixi.js';
 import TweenLite from 'gsap';
 import { COMPONENT } from '../core/constants';
+import { UNIQUE_TAG } from '../resources';
 
 const textDisplay_ = Symbol('textDisplay');
 
@@ -28,11 +29,18 @@ export default class Dialogue {
       wordWrapWidth: 440,
     };
     this[textDisplay_] = new Pixi.Text('i arrived', style);
-    this[textDisplay_].position.x = window.innerWidth / 2;
+    this[textDisplay_].anchor = {
+      x: 0.5,
+      y: 0,
+    };
+
+    this[textDisplay_].position.x = services.entity(UNIQUE_TAG.PLAYER).display.x;
     this[textDisplay_].position.y = window.innerHeight / 2;
     display.addChild(this[textDisplay_]);
 
-    TweenLite.to([this[textDisplay_].position], 1, { y: 0 });
+    TweenLite.to(this[textDisplay_].position, 1, {
+      y: 0,
+    });
   }
 
   // update() {

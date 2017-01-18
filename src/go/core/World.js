@@ -89,7 +89,11 @@ function performSceneChange(sceneId) {
 
 export default class World {
   constructor(stage) {
-    this[entityManager_] = new EntityManager(stage);
+    const entityServices = {
+      // TODO Refactor so change scene is performed via store.state change
+      changeScene: this.changeScene.bind(this),
+    };
+    this[entityManager_] = new EntityManager(stage, entityServices);
     this[keyboardController_] = new KeyboardController();
     this[nextScene_] = undefined;
   }

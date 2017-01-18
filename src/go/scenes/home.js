@@ -7,10 +7,10 @@ export default {
   controls: CONTROL_SCHEME.HOME,
   entities: [
     {
-      prefab: DOOR_PREFAB,
+      prefab: CHARACTER_PREFAB,
     },
     {
-      prefab: CHARACTER_PREFAB,
+      prefab: DOOR_PREFAB,
     },
   ],
 };

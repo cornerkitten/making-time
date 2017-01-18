@@ -1,17 +1,26 @@
 
 import { KEY } from './core/constants';
-import { SCENE_ID, COMMAND_ID, UNIQUE_TAG } from './resources';
+import { SCENE_ID, COMMAND_ID, UNIQUE_TAG, TAG } from './resources';
 import DIALOGUE_PREFAB from './prefabs/dialogue';
 
 export default {
   HOME: [
+    // {
+    //   trigger: {
+    //     event: KEY.START.SPACE,
+    //   },
+    //   action: {
+    //     commandId: COMMAND_ID.CHANGE_SCENE,
+    //     sceneId: SCENE_ID.PHONE,
+    //   },
+    // },
     {
       trigger: {
         event: KEY.START.SPACE,
       },
       action: {
-        commandId: COMMAND_ID.CHANGE_SCENE,
-        sceneId: SCENE_ID.PHONE,
+        commandId: COMMAND_ID.OPEN,
+        tag: TAG.DOOR,
       },
     },
     {
