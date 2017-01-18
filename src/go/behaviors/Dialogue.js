@@ -2,6 +2,7 @@
 /* global window */
 
 import * as Pixi from 'pixi.js';
+import TweenLite from 'gsap';
 import { COMPONENT } from '../core/constants';
 
 const textDisplay_ = Symbol('textDisplay');
@@ -30,9 +31,11 @@ export default class Dialogue {
     this[textDisplay_].position.x = window.innerWidth / 2;
     this[textDisplay_].position.y = window.innerHeight / 2;
     display.addChild(this[textDisplay_]);
+
+    TweenLite.to([this[textDisplay_].position], 1, { y: 0 });
   }
 
-  update() {
-    this[textDisplay_].position.y -= 5;
-  }
+  // update() {
+  //   this[textDisplay_].position.y -= 5;
+  // }
 }
