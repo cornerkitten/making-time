@@ -4,6 +4,8 @@
 
 /* global window */
 
+import { KEY_STATE, KEY_CODE } from '../core/constants';
+
 const keyDownBindings_ = Symbol('keyDownBindings');
 const keyStartBindings_ = Symbol('keyStartBindings');
 const keysInDownState_ = Symbol('keysInDownState');
@@ -22,20 +24,36 @@ export default class KeyboardController {
     window.addEventListener('keyup', this.onKeyUp.bind(this), false);
   }
 
-  registerKeyDown(key, command) {
-    if (this[keyDownBindings_][key] === undefined) {
-      this[keyDownBindings_][key] = [];
+  register(trigger, command) {
+    const event = trigger.event.split('.');
+    const eventState = event[1];
+    const eventKey = event[2];
+    const key = KEY_CODE[eventKey];
+    let bindings;
+
+    if (key === undefined) {
+      // TODO Throw exception
+      debugger;
     }
 
-    this[keyDownBindings_][key].push(command);
-  }
-
-  registerKeyStart(key, command) {
-    if (this[keyStartBindings_][key] === undefined) {
-      this[keyStartBindings_][key] = [];
+    switch (eventState) {
+      case KEY_STATE.START:
+        bindings = this[keyStartBindings_];
+        break;
+      case KEY_STATE.PRESS:
+        bindings = this[keyDownBindings_];
+        break;
+      default:
+        // TODO Throw exception
+        debugger;
+        break;
     }
 
-    this[keyStartBindings_][key].push(command);
+    if (bindings[key] === undefined) {
+      bindings[key] = [];
+    }
+
+    bindings[key].push(command);
   }
 
   onKeyDown(e) {

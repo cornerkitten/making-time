@@ -4,6 +4,7 @@
 // TODO Consider if any dependencies should be removed
 import EntityManager from '../core/EntityManager';
 import KeyboardController from '../core/KeyboardController';
+import { EVENT_TYPE } from '../core/constants';
 import SCENE from '../scenes/all';
 import COMMAND from '../commands/all';
 
@@ -13,49 +14,15 @@ const nextScene_ = Symbol('nextScene');
 
 // TODO Generalize and clean-up implementation (e.g. fewer magic indexes)
 function createControl(config, services, keyboardController) {
-  const event = config.trigger.event.split('.');
+  const eventType = config.trigger.event.split('.')[0];
   const Command = COMMAND[config.action.commandId];
-  // TODO Ensure params does not have engine properties (e.g. params.commandId)
+  // TODO Ensure params does not have unnecessary properties
+  //      (e.g. params.commandId)
   const params = config.action;
   const command = new Command(services, params);
 
-  if (event[0] === 'key') {
-    let register;
-    let key;
-
-    switch (event[1]) {
-      case 'start':
-        register = keyboardController.registerKeyStart;
-        break;
-      case 'press':
-        register = keyboardController.registerKeyDown;
-        break;
-      default:
-        // TODO Throw exception
-        debugger;
-        break;
-    }
-
-    switch (event[2]) {
-      case 'enter':
-        key = 13;
-        break;
-      case 'space':
-        key = 32;
-        break;
-      case 'left':
-        key = 37;
-        break;
-      case 'right':
-        key = 39;
-        break;
-      default:
-        // TODO Throw exception
-        debugger;
-        break;
-    }
-
-    register.bind(keyboardController)(key, command);
+  if (eventType === EVENT_TYPE.KEY) {
+    keyboardController.register(config.trigger, command);
   }
 }
 
