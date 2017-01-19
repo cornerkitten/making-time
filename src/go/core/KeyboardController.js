@@ -2,6 +2,7 @@
 /* eslint no-debugger: "off" */
 /* eslint no-console: "off" */
 
+// TODO Remove global dependency
 /* global window */
 
 import { KEY_STATE, KEY_CODE } from '../core/constants';

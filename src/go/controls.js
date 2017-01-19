@@ -1,5 +1,5 @@
 
-import { KEY } from './core/constants';
+import { KEY, POINTER } from './core/constants';
 import { SCENE_ID, COMMAND_ID, UNIQUE_TAG, TAG } from './resources';
 import DIALOGUE_PREFAB from './prefabs/dialogue';
 
@@ -45,7 +45,7 @@ export default {
     },
     {
       trigger: {
-        event: KEY.START.ENTER,
+        event: POINTER.TAP,
       },
       action: {
         commandId: COMMAND_ID.CREATE_ENTITY,
@@ -85,7 +85,7 @@ export default {
     },
     {
       trigger: {
-        event: KEY.START.ENTER,
+        event: POINTER.TAP,
       },
       action: {
         commandId: COMMAND_ID.CREATE_ENTITY,

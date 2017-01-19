@@ -4,16 +4,19 @@
 // TODO Consider if any dependencies should be removed
 import EntityManager from '../core/EntityManager';
 import KeyboardController from '../core/KeyboardController';
+import PointerController from '../core/PointerController';
 import { EVENT_TYPE } from '../core/constants';
 import SCENE from '../scenes/all';
 import COMMAND from '../commands/all';
 
 const entityManager_ = Symbol('entityManager');
 const keyboardController_ = Symbol('keyboardController');
+const pointerController_ = Symbol('pointerController');
 const nextScene_ = Symbol('nextScene');
 
 // TODO Generalize and clean-up implementation (e.g. fewer magic indexes)
-function createControl(config, services, keyboardController) {
+function createControl(config, services, keyboardController, pointerController) {
+  let controller;
   const eventType = config.trigger.event.split('.')[0];
   const Command = COMMAND[config.action.commandId];
   // TODO Ensure params does not have unnecessary properties
@@ -21,19 +24,31 @@ function createControl(config, services, keyboardController) {
   const params = config.action;
   const command = new Command(services, params);
 
-  if (eventType === EVENT_TYPE.KEY) {
-    keyboardController.register(config.trigger, command);
+  switch (eventType) {
+    case EVENT_TYPE.KEY:
+      controller = keyboardController;
+      break;
+    case EVENT_TYPE.POINTER:
+      controller = pointerController;
+      break;
+    default:
+      // TODO Throw exception
+      debugger;
+      break;
   }
+
+  controller.register(config.trigger, command);
 }
 
 function processScenePrefab(prefab, entityManager, keyboardController,
-  commandServices) {
+  pointerController, commandServices) {
   for (const entity of prefab.entities) {
     entityManager.createEntity(entity.prefab);
   }
 
   for (const control of prefab.controls) {
-    createControl(control, commandServices, keyboardController);
+    createControl(control, commandServices, keyboardController,
+      pointerController);
   }
 }
 
@@ -51,7 +66,7 @@ function performSceneChange(sceneId) {
   };
 
   processScenePrefab(SCENE[sceneId], this[entityManager_],
-    this[keyboardController_], commandServices);
+    this[keyboardController_], this[pointerController_], commandServices);
 }
 
 export default class World {
@@ -62,6 +77,7 @@ export default class World {
     };
     this[entityManager_] = new EntityManager(stage, entityServices);
     this[keyboardController_] = new KeyboardController();
+    this[pointerController_] = new PointerController();
     this[nextScene_] = undefined;
   }
 
@@ -76,6 +92,7 @@ export default class World {
     }
 
     this[keyboardController_].update();
+    this[pointerController_].update();
 
     this[entityManager_].update();
   }

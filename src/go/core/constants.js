@@ -27,6 +27,11 @@ export const KEY = {
   },
 };
 
+// TODO Create tests to ensure these values match their constant paths
+export const POINTER = {
+  TAP: 'pointer.tap',
+};
+
 export const KEY_STATE = {
   START: 'start',
   PRESS: 'press',
@@ -45,4 +50,8 @@ export const KEY_CODE = {
   [KEY_NAME.SPACE]: 32,
   [KEY_NAME.LEFT]: 37,
   [KEY_NAME.RIGHT]: 39,
+};
+
+export const POINTER_STATE = {
+  TAP: 'tap',
 };
