@@ -1,16 +1,20 @@
 
-import DOOR_PREFAB from '../prefabs/door';
-import CHARACTER_PREFAB from '../prefabs/character';
+// import DOOR_PREFAB from '../prefabs/door';
+// import CHARACTER_PREFAB from '../prefabs/character';
+import MOMENT_EMITTER from '../prefabs/momentEmitter';
 import CONTROL_SCHEME from '../controls';
 
 export default {
-  controls: CONTROL_SCHEME.HOME,
+  controls: CONTROL_SCHEME.NONE,
   entities: [
     {
-      prefab: CHARACTER_PREFAB,
+      prefab: MOMENT_EMITTER,
     },
-    {
-      prefab: DOOR_PREFAB,
-    },
+    // {
+    //   prefab: CHARACTER_PREFAB,
+    // },
+    // {
+    //   prefab: DOOR_PREFAB,
+    // },
   ],
 };

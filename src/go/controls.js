@@ -4,6 +4,7 @@ import { SCENE_ID, COMMAND_ID, UNIQUE_TAG, TAG } from './resources';
 import DIALOGUE_PREFAB from './prefabs/dialogue';
 
 export default {
+  NONE: [],
   HOME: [
     // {
     //   trigger: {

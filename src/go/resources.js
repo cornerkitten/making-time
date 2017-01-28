@@ -7,6 +7,7 @@
 import Character from './behaviors/Character';
 import Door from './behaviors/Door';
 import Dialogue from './behaviors/Dialogue';
+import MomentEmitter from './behaviors/MomentEmitter';
 
 export const TEXTURE = {
   CHARACTER: 'static/img/go-stone-white-flat.svg',
@@ -37,6 +38,7 @@ export const BEHAVIOR = {
   CHARACTER: 'character',
   DOOR: 'door',
   DIALOGUE: 'dialogue',
+  MOMENT_EMITTER: 'momentEmitter',
 };
 
 // TODO Consider whether this should be placed in separate file
@@ -46,6 +48,7 @@ export const BEHAVIOR_CLASS = {
   [BEHAVIOR.CHARACTER]: Character,
   [BEHAVIOR.DOOR]: Door,
   [BEHAVIOR.DIALOGUE]: Dialogue,
+  [BEHAVIOR.MOMENT_EMITTER]: MomentEmitter,
 };
 
 export const UNIQUE_TAG = {

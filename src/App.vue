@@ -21,7 +21,7 @@ export default {
 
 <style lang="scss">
 html, body {
-  background-color: hsla(0, 0%, 3%, 1);
+  background-color: hsla(0, 0%, 80%, 1);
   margin: 0;
 }
 
