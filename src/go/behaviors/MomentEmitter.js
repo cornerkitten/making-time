@@ -9,6 +9,7 @@ const nextMomentPosition_ = Symbol('nextMomentPosition');
 const currentHour_ = Symbol('currentHour');
 const hours_ = Symbol('hours');
 const momentTexture_ = Symbol('momentTexture');
+const momentSize_ = Symbol('momentSize');
 const hourWidth_ = Symbol('hourWidth_');
 const hourHeight_ = Symbol('hourHeight_');
 const hourSpacing_ = Symbol('hourSpacing_');
@@ -28,12 +29,18 @@ export default class {
       x: camera.width / 9, // 64
       y: camera.height / 7,
     };
+    this[momentSize_] = (this[hourSpacing_].y / 4) * 0.5;
     const HOURS_PER_ROW = 4;
 
     for (let i = 0; i < 12; i += 1) {
       const column = i % HOURS_PER_ROW;
       const row = Math.floor(i / HOURS_PER_ROW);
-      const hourContainer = new Pixi.particles.ParticleContainer();
+      const hourContainer = new Pixi.particles.ParticleContainer(
+        15000,
+        {
+          alpha: true,
+        },
+      );
       hourContainer.x = this[hourSpacing_].x + (column * (this[hourWidth_] + this[hourSpacing_].x));
       hourContainer.y = (camera.height - this[hourSpacing_].y) -
         (row * (this[hourHeight_] + this[hourSpacing_].y));
@@ -48,11 +55,11 @@ export default class {
 
     const moment = new Pixi.Graphics();
     moment.beginFill(0xd6f5ff);
-    moment.drawRect(0, 0, 4, 4);
+    moment.drawRect(0, 0, this[momentSize_], this[momentSize_]);
     moment.endFill();
     this[momentTexture_] = moment.generateTexture();
 
-    setInterval(this.emit.bind(this), 250 / 4);
+    setInterval(this.emit.bind(this), 250);
   }
 
   // TODO Ideas
@@ -62,14 +69,16 @@ export default class {
     const moment = new Pixi.Sprite(this[momentTexture_]);
     moment.x = nextPos.x;
     moment.y = -this[hours_][this[currentHour_]].y;
+    moment.alpha = 0.25;
     this[hours_][this[currentHour_]].addChild(moment);
 
-    TweenLite.to(moment, 1.5 / 2, { y: nextPos.y });
+    TweenLite.to(moment, 1.5, { y: nextPos.y });
+    TweenLite.to(moment, 1, { alpha: 1 });
 
-    nextPos.x += 2;
+    nextPos.x += this[momentSize_] * 0.75; // 2
     if (nextPos.x >= this[hourWidth_]) { // 60
       nextPos.x = 0;
-      nextPos.y -= 12;
+      nextPos.y -= this[hourHeight_] / 4; // 12
     }
     if (nextPos.y <= -this[hourHeight_]) { // nextPos.y <= -48
       this[currentHour_] += 1;
