@@ -7,13 +7,15 @@ import { COMPONENT } from '../core/constants';
 
 const display_ = Symbol('display');
 const nextMomentPosition_ = Symbol('nextMomentPosition');
+const currentHour_ = Symbol('currentHour');
 
 export default class {
   constructor(params, services) {
     this[display_] = services.component(COMPONENT.DISPLAY);
+    this[currentHour_] = new Pixi.ParticleContainer();
     this[nextMomentPosition_] = {
-      x: 0,
-      y: 200,
+      x: 128,
+      y: 512,
     };
 
     setInterval(this.emit.bind(this), 250);
@@ -23,16 +25,16 @@ export default class {
     const nextPos = this[nextMomentPosition_];
     const moment = new Pixi.Graphics(this.x);
     moment.x = nextPos.x;
-    moment.beginFill(0x111111);
+    moment.beginFill(0xd6f5ff);
     moment.drawRect(0, 0, 8, 8);
     moment.endFill();
     this[display_].addChild(moment);
 
     TweenLite.to(moment, 1.5, { y: nextPos.y });
 
-    nextPos.x += 0.25;
-    if (nextPos.x >= 60) {
-      nextPos.x = 0;
+    nextPos.x += 2;
+    if (nextPos.x >= 128 + 60) {
+      nextPos.x = 128;
       nextPos.y -= 8;
     }
   }
