@@ -7,12 +7,14 @@
 
 import * as Pixi from 'pixi.js';
 import World from '../core/World';
+import Camera from '../core/Camera';
 import { TEXTURE } from '../resources';
 
 const stage_ = Symbol('stage');
 const renderer_ = Symbol('renderer');
 const initialScene_ = Symbol('initialScene');
 const world_ = Symbol('world');
+const camera_ = Symbol('camera');
 
 function loadTextures(callback) {
   Pixi.loader.reset();
@@ -38,12 +40,13 @@ export default class Engine {
       view,
       transparent: true,
     });
+    this[camera_] = new Camera(this[renderer_]);
 
     loadTextures(this.onLoad.bind(this));
   }
 
   onLoad() {
-    this[world_] = new World(this[stage_]);
+    this[world_] = new World(this[stage_], this[camera_]);
     this[world_].changeScene(this[initialScene_]);
 
     requestAnimationFrame(this.update.bind(this));

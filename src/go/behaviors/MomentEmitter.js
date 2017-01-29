@@ -5,30 +5,40 @@ import * as Pixi from 'pixi.js';
 import TweenLite from 'gsap';
 import { COMPONENT } from '../core/constants';
 
-const display_ = Symbol('display');
 const nextMomentPosition_ = Symbol('nextMomentPosition');
 const currentHour_ = Symbol('currentHour');
 const hours_ = Symbol('hours');
 const momentTexture_ = Symbol('momentTexture');
+const hourWidth_ = Symbol('hourWidth_');
+const hourHeight_ = Symbol('hourHeight_');
+const hourSpacing_ = Symbol('hourSpacing_');
+// TODO Consider placing all private properties under single object of
+//      this[_] or this[private_] or something to that effect...
+//      const _ = Symbol('_');
 
 export default class {
   constructor(params, services) {
-    this[display_] = services.component(COMPONENT.DISPLAY);
+    const display = services.component(COMPONENT.DISPLAY);
     this[currentHour_] = 0;
     this[hours_] = [];
-    const HOUR_WIDTH = 128;
-    const HOUR_HEIGHT = HOUR_WIDTH;
-    const HOUR_SPACING = 64;
+    const camera = services.camera;
+    this[hourWidth_] = camera.width / 9; // 128;
+    this[hourHeight_] = camera.height / 7;
+    this[hourSpacing_] = {
+      x: camera.width / 9, // 64
+      y: camera.height / 7,
+    };
     const HOURS_PER_ROW = 4;
 
     for (let i = 0; i < 12; i += 1) {
       const column = i % HOURS_PER_ROW;
-      const row = Math.floor(i / 4);
+      const row = Math.floor(i / HOURS_PER_ROW);
       const hourContainer = new Pixi.particles.ParticleContainer();
-      hourContainer.x = 128 + (column * (HOUR_WIDTH + HOUR_SPACING));
-      hourContainer.y = 512 - (row * (HOUR_HEIGHT + HOUR_SPACING));
+      hourContainer.x = this[hourSpacing_].x + (column * (this[hourWidth_] + this[hourSpacing_].x));
+      hourContainer.y = (camera.height - this[hourSpacing_].y) -
+        (row * (this[hourHeight_] + this[hourSpacing_].y));
       this[hours_].push(hourContainer);
-      this[display_].addChild(hourContainer);
+      display.addChild(hourContainer);
     }
 
     this[nextMomentPosition_] = {
@@ -42,26 +52,26 @@ export default class {
     moment.endFill();
     this[momentTexture_] = moment.generateTexture();
 
-    setInterval(this.emit.bind(this), 250);
+    setInterval(this.emit.bind(this), 250 / 4);
   }
 
   // TODO Ideas
   //  - Fade in particle as it falls
   emit() {
     const nextPos = this[nextMomentPosition_];
-    const momentSprite = new Pixi.Sprite(this[momentTexture_]);
-    momentSprite.x = nextPos.x;
-    momentSprite.y = -this[hours_][this[currentHour_]].y;
-    this[hours_][this[currentHour_]].addChild(momentSprite);
+    const moment = new Pixi.Sprite(this[momentTexture_]);
+    moment.x = nextPos.x;
+    moment.y = -this[hours_][this[currentHour_]].y;
+    this[hours_][this[currentHour_]].addChild(moment);
 
-    TweenLite.to(momentSprite, 1.5, { y: nextPos.y });
+    TweenLite.to(moment, 1.5 / 2, { y: nextPos.y });
 
     nextPos.x += 2;
-    if (nextPos.x >= 60) {
+    if (nextPos.x >= this[hourWidth_]) { // 60
       nextPos.x = 0;
       nextPos.y -= 12;
     }
-    if (nextPos.y <= -48) {
+    if (nextPos.y <= -this[hourHeight_]) { // nextPos.y <= -48
       this[currentHour_] += 1;
       nextPos.y = 0;
     }

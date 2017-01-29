@@ -122,7 +122,7 @@ export default class EntityManager {
     this[stage_].addChild(display);
     entity.display = display;
 
-    const services = {
+    const services = Object.assign({
       component: (componentId) => {
         switch (componentId) {
           case COMPONENT.DISPLAY:
@@ -132,9 +132,9 @@ export default class EntityManager {
         }
       },
       // TODO Update so scene change happens via store.state change
-      changeScene: this[entityServices_].changeScene,
+      // changeScene: this[entityServices_].changeScene,
       entity: this.entityWithTag.bind(this),
-    };
+    }, this[entityServices_]);
     entity.services = services;
 
     if (config.behaviors) {
