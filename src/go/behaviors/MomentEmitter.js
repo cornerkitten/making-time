@@ -8,15 +8,28 @@ import { COMPONENT } from '../core/constants';
 const display_ = Symbol('display');
 const nextMomentPosition_ = Symbol('nextMomentPosition');
 const currentHour_ = Symbol('currentHour');
+const hours_ = Symbol('hours');
 const momentTexture_ = Symbol('momentTexture');
 
 export default class {
   constructor(params, services) {
     this[display_] = services.component(COMPONENT.DISPLAY);
-    this[currentHour_] = new Pixi.particles.ParticleContainer();
-    this[currentHour_].x = 128;
-    this[currentHour_].y = 512;
-    this[display_].addChild(this[currentHour_]);
+    this[currentHour_] = 0;
+    this[hours_] = [];
+    const HOUR_WIDTH = 128;
+    const HOUR_HEIGHT = HOUR_WIDTH;
+    const HOUR_SPACING = 64;
+    const HOURS_PER_ROW = 4;
+
+    for (let i = 0; i < 12; i += 1) {
+      const column = i % HOURS_PER_ROW;
+      const row = Math.floor(i / 4);
+      const hourContainer = new Pixi.particles.ParticleContainer();
+      hourContainer.x = 128 + (column * (HOUR_WIDTH + HOUR_SPACING));
+      hourContainer.y = 512 - (row * (HOUR_HEIGHT + HOUR_SPACING));
+      this[hours_].push(hourContainer);
+      this[display_].addChild(hourContainer);
+    }
 
     this[nextMomentPosition_] = {
       x: 0,
@@ -38,8 +51,8 @@ export default class {
     const nextPos = this[nextMomentPosition_];
     const momentSprite = new Pixi.Sprite(this[momentTexture_]);
     momentSprite.x = nextPos.x;
-    momentSprite.y = -this[currentHour_].y;
-    this[currentHour_].addChild(momentSprite);
+    momentSprite.y = -this[hours_][this[currentHour_]].y;
+    this[hours_][this[currentHour_]].addChild(momentSprite);
 
     TweenLite.to(momentSprite, 1.5, { y: nextPos.y });
 
@@ -47,6 +60,16 @@ export default class {
     if (nextPos.x >= 60) {
       nextPos.x = 0;
       nextPos.y -= 8;
+    }
+    if (nextPos.y <= -32) {
+      this[currentHour_] += 1;
+      nextPos.y = 0;
+    }
+    if (this[currentHour_] >= this[hours_].length) {
+      this[currentHour_] = 0;
+      this[hours_].forEach((hourContainer) => {
+        hourContainer.removeChildren();
+      });
     }
   }
 
