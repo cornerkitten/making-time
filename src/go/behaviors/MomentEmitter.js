@@ -1,5 +1,6 @@
 
 /* global setInterval */
+/* global clearInterval */
 
 import * as Pixi from 'pixi.js';
 import TweenLite from 'gsap';
@@ -16,6 +17,8 @@ const momentSize_ = Symbol('momentSize');
 const hourWidth_ = Symbol('hourWidth_');
 const hourHeight_ = Symbol('hourHeight_');
 const hourSpacing_ = Symbol('hourSpacing_');
+const startIntervalId_ = Symbol('startIntervalId');
+const startSeconds_ = Symbol('startSeconds_');
 // TODO Consider placing all private properties under single object of
 //      this[_] or this[private_] or something to that effect...
 //      const _ = Symbol('_');
@@ -35,7 +38,7 @@ export default class {
       x: camera.width / 9, // 64
       y: camera.height / 7,
     };
-    this[momentSize_] = (this[hourSpacing_].y / 4 / 4) * 1; // 0.5;
+    this[momentSize_] = (this[hourSpacing_].y / 4 / 4) * 0.75; // * 0.5;
     const HOURS_PER_ROW = 4;
 
     for (let i = 0; i < 12; i += 1) {
@@ -65,7 +68,31 @@ export default class {
     moment.endFill();
     this[momentTexture_] = moment.generateTexture();
 
-    setInterval(this.emit.bind(this), 1000); // 1000); // 250
+    const now = new Date();
+    this[startSeconds_] = now.getSeconds();
+    this[startSeconds_] += now.getMinutes() * 60;
+    this[startSeconds_] += (now.getHours() % 12) * 60 * 60;
+
+    this[startIntervalId_] = setInterval(this.fastForward.bind(this), 5); // 1000); // 250
+  }
+
+  fastForward() {
+    const secondsInQuarter = 900; // 15 minutes * 60 secs/min
+    const rowsInQuarter = 4;
+    const secondsInQuarterRow = secondsInQuarter / rowsInQuarter;
+    if (this[startSeconds_] > secondsInQuarterRow) {
+      for (let i = 0; i < secondsInQuarterRow; i += 1) {
+        this.emit();
+      }
+      this[startSeconds_] -= secondsInQuarterRow;
+    } else {
+      for (let i = 0; i < this[startSeconds_]; i += 1) {
+        this.emit();
+        this[startSeconds_] = 0;
+      }
+      clearInterval(this[startIntervalId_]);
+      setInterval(this.emit.bind(this), 1000);
+    }
   }
 
   // TODO Ideas
@@ -90,7 +117,8 @@ export default class {
     moment.alpha = 0.25;
     this[hours_][this[currentHour_]].addChild(moment);
 
-    TweenLite.to(moment, 1.5, { y: newPos.y });
+    const duration = (this[startSeconds_] > 0 ? 0.75 : 1.5);
+    TweenLite.to(moment, duration, { y: newPos.y });
     TweenLite.to(moment, 1, { alpha: 1 });
 
     this.prepareNextPos();
