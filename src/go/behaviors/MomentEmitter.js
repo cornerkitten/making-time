@@ -59,7 +59,7 @@ export default class {
     moment.endFill();
     this[momentTexture_] = moment.generateTexture();
 
-    setInterval(this.emit.bind(this), 250);
+    setInterval(this.emit.bind(this), 1000); // 250
   }
 
   // TODO Ideas
