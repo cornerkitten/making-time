@@ -7,6 +7,9 @@ import { COMPONENT } from '../core/constants';
 
 const nextMomentPosition_ = Symbol('nextMomentPosition');
 const currentHour_ = Symbol('currentHour');
+const currentQuarter_ = Symbol('currentQuarter');
+const currentQuarterRow_ = Symbol('currentQuarterRow');
+const currentQuarterColumn_ = Symbol('currentQuarterColumn');
 const hours_ = Symbol('hours');
 const momentTexture_ = Symbol('momentTexture');
 const momentSize_ = Symbol('momentSize');
@@ -21,6 +24,9 @@ export default class {
   constructor(params, services) {
     const display = services.component(COMPONENT.DISPLAY);
     this[currentHour_] = 0;
+    this[currentQuarter_] = 0;
+    this[currentQuarterRow_] = 0;
+    this[currentQuarterColumn_] = 0;
     this[hours_] = [];
     const camera = services.camera;
     this[hourWidth_] = camera.width / 9; // 128;
@@ -29,7 +35,7 @@ export default class {
       x: camera.width / 9, // 64
       y: camera.height / 7,
     };
-    this[momentSize_] = (this[hourSpacing_].y / 4) * 0.5;
+    this[momentSize_] = (this[hourSpacing_].y / 4 / 4) * 1; // 0.5;
     const HOURS_PER_ROW = 4;
 
     for (let i = 0; i < 12; i += 1) {
@@ -59,37 +65,95 @@ export default class {
     moment.endFill();
     this[momentTexture_] = moment.generateTexture();
 
-    setInterval(this.emit.bind(this), 1000); // 250
+    setInterval(this.emit.bind(this), 1000); // 1000); // 250
   }
 
   // TODO Ideas
   //  - Fade in particle as it falls
   emit() {
-    const nextPos = this[nextMomentPosition_];
+    const secondsInQuarter = 900; // 15 minutes * 60 secs/min
+    const rowsInQuarter = 4;
+    const secondsInQuarterRow = secondsInQuarter / rowsInQuarter;
+    const columnWidth = this[hourWidth_] / secondsInQuarterRow;
+    const rowHeight = this[hourHeight_] / rowsInQuarter;
+    // const newPos = this[nextMomentPosition_];
+    const newPos = {
+      x: this[currentQuarterColumn_] * columnWidth,
+      y: -(
+        (this[currentQuarter_] * rowHeight) +
+        (this[currentQuarterRow_] * (this[momentSize_] - 1))
+      ),
+    };
     const moment = new Pixi.Sprite(this[momentTexture_]);
-    moment.x = nextPos.x;
+    moment.x = newPos.x;
     moment.y = -this[hours_][this[currentHour_]].y;
     moment.alpha = 0.25;
     this[hours_][this[currentHour_]].addChild(moment);
 
-    TweenLite.to(moment, 1.5, { y: nextPos.y });
+    TweenLite.to(moment, 1.5, { y: newPos.y });
     TweenLite.to(moment, 1, { alpha: 1 });
 
-    nextPos.x += this[momentSize_] * 0.75; // 2
-    if (nextPos.x >= this[hourWidth_]) { // 60
-      nextPos.x = 0;
-      nextPos.y -= this[hourHeight_] / 4; // 12
+    this.prepareNextPos();
+  }
+
+  prepareNextPos() {
+    // const nextPos = this[nextMomentPosition_];
+    const secondsInQuarter = 900; // 15 minutes * 60 secs/min
+    const rowsInQuarter = 4;
+    const secondsInQuarterRow = secondsInQuarter / rowsInQuarter;
+
+    this[currentQuarterColumn_] += 1;
+    if (this[currentQuarterColumn_] >= secondsInQuarterRow) {
+      this[currentQuarterColumn_] = 0;
+      this[currentQuarterRow_] += 1;
     }
-    if (nextPos.y <= -this[hourHeight_]) { // nextPos.y <= -48
+
+    if (this[currentQuarterRow_] >= rowsInQuarter) {
+      this[currentQuarterRow_] = 0;
+      this[currentQuarter_] += 1;
+    }
+
+    if (this[currentQuarter_] >= 4) {
+      this[currentQuarter_] = 0;
       this[currentHour_] += 1;
-      nextPos.y = 0;
     }
-    if (this[currentHour_] >= this[hours_].length) {
+
+    if (this[currentHour_] >= 12) {
       this[currentHour_] = 0;
       this[hours_].forEach((hourContainer) => {
         hourContainer.removeChildren();
       });
     }
+
+    // if (nextPos.x >= this[hourWidth_]) { // 60
+    //   nextPos.x = 0;
+    //   nextPos.y -= this[momentSize_] - 2; // this[hourHeight_] / 4; // 12
+    // }
+    // if (nextPos.y <= -this[hourHeight_]) { // nextPos.y <= -48
+    //   this[currentHour_] += 1;
+    //   nextPos.y = 0;
+    // }
+    // if (this[currentHour_] >= this[hours_].length) {
+    //   this[currentHour_] = 0;
+    //   this[hours_].forEach((hourContainer) => {
+    //     hourContainer.removeChildren();
+    //   });
+
+    // nextPos.x += this[momentSize_] * 0.75; // 2
+    // if (nextPos.x >= this[hourWidth_]) { // 60
+    //   nextPos.x = 0;
+    //   nextPos.y -= this[momentSize_] - 2; // this[hourHeight_] / 4; // 12
+    // }
+    // if (nextPos.y <= -this[hourHeight_]) { // nextPos.y <= -48
+    //   this[currentHour_] += 1;
+    //   nextPos.y = 0;
+    // }
+    // if (this[currentHour_] >= this[hours_].length) {
+    //   this[currentHour_] = 0;
+    //   this[hours_].forEach((hourContainer) => {
+    //     hourContainer.removeChildren();
+    //   });
+    // }
   }
 
   // update() {
