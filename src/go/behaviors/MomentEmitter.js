@@ -59,9 +59,9 @@ export default class {
     nextPos.x += 2;
     if (nextPos.x >= 60) {
       nextPos.x = 0;
-      nextPos.y -= 8;
+      nextPos.y -= 12;
     }
-    if (nextPos.y <= -32) {
+    if (nextPos.y <= -48) {
       this[currentHour_] += 1;
       nextPos.y = 0;
     }
