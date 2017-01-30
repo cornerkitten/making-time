@@ -118,8 +118,8 @@ export default class {
     moment.y = -this[hours_][this[currentHour_]].y;
     // moment.alpha = 0.25;
     // moment.alpha = 1;
-    moment.scale.x = 4;
-    moment.scale.y = 4;
+    moment.scale.x = 2;
+    moment.scale.y = 2;
     this[hours_][this[currentHour_]].addChild(moment);
 
     const duration = (this[startSeconds_] > 0 ? 0.75 : 1.5);
