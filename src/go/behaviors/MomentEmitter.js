@@ -47,7 +47,8 @@ export default class {
       const hourContainer = new Pixi.particles.ParticleContainer(
         15000,
         {
-          alpha: true,
+          // alpha: true,
+          scale: true,
         },
       );
       hourContainer.x = this[hourSpacing_].x + (column * (this[hourWidth_] + this[hourSpacing_].x));
@@ -115,11 +116,14 @@ export default class {
     moment.x = newPos.x;
     moment.y = -this[hours_][this[currentHour_]].y;
     // moment.alpha = 0.25;
-    moment.alpha = 1;
+    // moment.alpha = 1;
+    moment.scale.x = 4;
+    moment.scale.y = 4;
     this[hours_][this[currentHour_]].addChild(moment);
 
     const duration = (this[startSeconds_] > 0 ? 0.75 : 1.5);
     TweenLite.to(moment, duration, { y: newPos.y });
+    TweenLite.to(moment.scale, duration, { x: 1, y: 1 });
     // TweenLite.to(moment, 1, { alpha: 1 });
 
     this.prepareNextPos();
