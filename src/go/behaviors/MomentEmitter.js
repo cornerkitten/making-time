@@ -32,13 +32,14 @@ export default class {
     this[currentQuarterColumn_] = 0;
     this[hours_] = [];
     const camera = services.camera;
-    this[hourWidth_] = camera.width / 9; // 128;
-    this[hourHeight_] = camera.height / 7;
+    this[hourWidth_] = camera.width / 5; // camera.width / 9 // 128;
+    this[hourHeight_] = camera.height / 4; // camera.height / 7 // 7
     this[hourSpacing_] = {
-      x: camera.width / 9, // 64
-      y: camera.height / 7,
+      x: (camera.width - (this[hourWidth_] * 4)) / 5, // camera.width / 9, // 9, // 64
+      y: (camera.height - (this[hourHeight_] * 3)) / 4, // camera.height / 7, // 7
     };
-    this[momentSize_] = (this[hourSpacing_].y / 4 / 4) * 0.5; // * 0.5;
+    // this[momentSize_] = (this[hourSpacing_].y / 4 / 4) * 0.5; // * 0.5;
+    this[momentSize_] = 8; // * 0.5;
     const HOURS_PER_ROW = 4;
 
     for (let i = 0; i < 12; i += 1) {
@@ -157,36 +158,6 @@ export default class {
         hourContainer.removeChildren();
       });
     }
-
-    // if (nextPos.x >= this[hourWidth_]) { // 60
-    //   nextPos.x = 0;
-    //   nextPos.y -= this[momentSize_] - 2; // this[hourHeight_] / 4; // 12
-    // }
-    // if (nextPos.y <= -this[hourHeight_]) { // nextPos.y <= -48
-    //   this[currentHour_] += 1;
-    //   nextPos.y = 0;
-    // }
-    // if (this[currentHour_] >= this[hours_].length) {
-    //   this[currentHour_] = 0;
-    //   this[hours_].forEach((hourContainer) => {
-    //     hourContainer.removeChildren();
-    //   });
-
-    // nextPos.x += this[momentSize_] * 0.75; // 2
-    // if (nextPos.x >= this[hourWidth_]) { // 60
-    //   nextPos.x = 0;
-    //   nextPos.y -= this[momentSize_] - 2; // this[hourHeight_] / 4; // 12
-    // }
-    // if (nextPos.y <= -this[hourHeight_]) { // nextPos.y <= -48
-    //   this[currentHour_] += 1;
-    //   nextPos.y = 0;
-    // }
-    // if (this[currentHour_] >= this[hours_].length) {
-    //   this[currentHour_] = 0;
-    //   this[hours_].forEach((hourContainer) => {
-    //     hourContainer.removeChildren();
-    //   });
-    // }
   }
 
   // update() {
