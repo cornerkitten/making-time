@@ -38,7 +38,7 @@ export default class {
       x: camera.width / 9, // 64
       y: camera.height / 7,
     };
-    this[momentSize_] = (this[hourSpacing_].y / 4 / 4) * 0.75; // * 0.5;
+    this[momentSize_] = (this[hourSpacing_].y / 4 / 4) * 0.5; // * 0.5;
     const HOURS_PER_ROW = 4;
 
     for (let i = 0; i < 12; i += 1) {
@@ -114,12 +114,13 @@ export default class {
     const moment = new Pixi.Sprite(this[momentTexture_]);
     moment.x = newPos.x;
     moment.y = -this[hours_][this[currentHour_]].y;
-    moment.alpha = 0.25;
+    // moment.alpha = 0.25;
+    moment.alpha = 1;
     this[hours_][this[currentHour_]].addChild(moment);
 
     const duration = (this[startSeconds_] > 0 ? 0.75 : 1.5);
     TweenLite.to(moment, duration, { y: newPos.y });
-    TweenLite.to(moment, 1, { alpha: 1 });
+    // TweenLite.to(moment, 1, { alpha: 1 });
 
     this.prepareNextPos();
   }
