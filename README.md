@@ -1,10 +1,6 @@
-# mini-game
+# Making Time
 
-> A small game made during our mini-code-day.
-
-## IMPORTANT
-
-This project is in a heavily prototype-stage, right now.
+> A clock that builds itself over time.
 
 ## Build Setup
 
